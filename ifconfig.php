@@ -18,9 +18,9 @@ $upload_path = dirname (__FILE__).dir_upload;
 /* Массив с разрешенными файлами */
 $allowedtypes = array("zip","rar","7z","tar","gz","jpg","png","deb","rpm");
 /* Имя админа */
-$admin_login = "foozzi";
+#$admin_login = "foozzi";
 /* Пароль админа */
-$passwd_admin = "798477";
+#$passwd_admin = "798477";
 /* Настройки времени на сервере */
 $date = date('l jS \of F Y h:i:s A');
 /* Промежуток дней, через который надо удалять файлы */
