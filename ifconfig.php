@@ -2,7 +2,11 @@
 /* Название сайта */
 $site_name = "GNUU";
 /* Максимальный размер файла в мб. */
-$max_size = 8;
+$max_size = 2;
+/* Кодировка */
+$cod = header('Content-Type: text/html; charset=utf-8');
+/* Языки */
+if(!defined ("LANG"))  define ("LANG", "ru");
 /* Папка для загрузки */
 if(!defined ("dir_upload"))  define ("dir_upload", "uploads");
 /* Константы баз данных */
@@ -24,5 +28,5 @@ $kill_days = 30;
 /* Промежуток дней, через который надо удалять файлы с ссылками */
 $kill_days1 = 1;
 /* Включить ошибки - 1; Выключить ошибки - 0; */
-$err = 1;
+$err = 1; 
 ?>

@@ -2,14 +2,17 @@
 /* 
  * foozzi 2011 copyleft
  * License: GNU/GPL
- * V.1.0
+ * V.2.0
  * GNU-Uploader
 */
 if(!file_exists("./ifconfig.php")) exit("Файл ifconfig.php не найден");
 include_once ("./ifconfig.php");
+include("local/".LANG.".php");
+/* Если язык не ru, то выбераем язык указаный в конфиге */
+if (LANG!=='ru') { $lang = LANG; }
 ini_set('display_errors',$err); 
 error_reporting(E_ALL);
-
+### Переменные ###
 $userip = $_SERVER['REMOTE_ADDR'];
 $file_name = $_FILES['filename']['name'];
 $file_size = $_FILES['filename']['size'];
@@ -17,6 +20,8 @@ $error_flag = $_FILES["filename"]["error"];
 $file_size = $file_size / 1048576; 
 $time = time() - $kill_days * 86400; // Отсчитываем n-дней до удаления старых файлов
 $time1 = time() - $kill_days1 * 86400; // Отсчитываем n-дней до удаления файлов со ссылками
+$ext1 = pathinfo($file_name,PATHINFO_EXTENSION); // Вычисляем расширение файла
+### end ###
 /* Создаем базу данных для загрузок если ее нет */
 if(!file_exists(db_upload)) 
 {
@@ -35,7 +40,8 @@ if (!file_exists(link_files))
 /* Проверка, выбран ли файл */	
 if($file_size == 0) 
 {
-	echo "Вы не выбрали файл";
+	echo $local['m1'];
+	echo $local['m3'];
 	die();
 	}
 /* Проверка файлов на разрешение */
@@ -49,16 +55,16 @@ if(isset($allowedtypes))
 		}
 		if($allowed == 0) 
 		{
-			echo "Не разрешенный тип файла.</br>";
-			echo "<a href='?".md5(microtime())."'>Попробовать еще</a>";
+			echo $local['m2'];
+			echo $local['m3'];
 			die();
 			}
 }
 /* Проверка размера файла */
 if($file_size > $max_size) 
 {
-	echo "Файл слишком большой.</br>";
-	echo "<a href='?".md5(microtime())."'>Попробовать еще</a>";
+	echo $local['m4'];
+	echo $local['m3'];
 	die();
 	}
 /* Присваивание номера файлу */
@@ -70,7 +76,6 @@ while($e=readdir($d))
      $s++;
   }
 /* Преобразование имени */
-$ext1 = pathinfo($file_name,PATHINFO_EXTENSION);
 $file_name = rand(000000001, 999999991)."#".$s.".".$ext1;
 /* Пишем загрузку в базу */
 $filelist = fopen(db_upload, "a+"); // ("r" - считывать "w" - создавать "a" - добовлять к тексту)
@@ -92,44 +97,43 @@ function createlinktxt()
 if($error_flag == 0) 
 {
 	if (move_uploaded_file($_FILES['filename']['tmp_name'], dir_upload."/".$file_name))
-   {
-   	/* Это уг над будем поменять */
-	   echo "Файл загружен.<br>"; 
-	   echo "Линки:<br>";
-      echo "<input type='text' size=80 onclick='this.select()' value='".$upload_link."'><br><br>"; // Обычная ссылка
-      echo "HTML Линк:<br>";
-      echo "<input type='text' size=80 onclick='this.select()' value=\"<a href='".$upload_link."'>".$file_name."</a>\"><br><br>"; // HTML Ссылка
-      echo "BB-Code Линк:<br>";
-      echo "<input type='text' size=80 onclick='this.select()' value='[url]".$upload_link."[/url]'><br><br>"; // BB-Code Ссылка
-      echo "Скачать .txt файл с вашей ссылкой.<br>";
-      createlinktxt();
-      echo "<input type='text' size=80 onclick='this.select()' value=".$txt_file_name."><br><br>"; // .txt файл со ссылкой
-      echo "<a href='?".md5(microtime())."'>Загрузить другой файл</a>";
-      
-	}
-   else 
-   {
-   	echo "Произошла неизвестная ошибка, файл не был загружен</br>";
-	   echo "<a href='?".md5(microtime())."'>Попробовать еще</a>";
-	   die();
-	}
-}
+      {
+      	/* Это уг над будем поменять */
+	      echo $local['m5']; 
+	      echo $local['m6'];
+         echo "<input type='text' size=80 onclick='this.select()' value='".$upload_link."'><br><br>"; // Обычная ссылка
+         echo $local['m7'];
+         echo "<input type='text' size=80 onclick='this.select()' value=\"<a href='".$upload_link."'>".$file_name."</a>\"><br><br>"; // HTML Ссылка
+         echo $local['m8'];
+         echo "<input type='text' size=80 onclick='this.select()' value='[url]".$upload_link."[/url]'><br><br>"; // BB-Code Ссылка
+         echo $local['m9'];
+         createlinktxt(); // Функция генерации ссылки в .txt файле
+         echo "<input type='text' size=80 onclick='this.select()' value=".$txt_file_name."><br><br>"; // .txt файл со ссылкой
+         echo $local['m10'];
+         }
+          else 
+          {
+          	echo $local['m11'];
+          	echo $local['m3'];
+	         die();
+            }
+}	
 /* Еще проверки по флагам */		
 if($error_flag == 1) 
 {
-	echo "Размер файла превышает заданный размер на сервере";
+	echo $local['m12'];
 	die();
 	}
 	if($error_flag == 3) 
 	{
-		echo "При загрузке, была загружена лишь часть файла";
+		echo $local['m13'];
 		die();
 		}
 		if($error_flag == 4) 
 		{
-			echo "Вы задали не верный путь к файлу";
+			echo $local['m14'];
 			die();
-			}	
+			}
 /* Удаление старых файлов */			
 $dir = scandir(dir_upload); // Получаем список папок и файлов
 foreach($dir as $name) 
